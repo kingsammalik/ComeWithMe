@@ -13,10 +13,10 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;
@@ -78,6 +78,9 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
         mapFragment.getMapAsync(this);
         stopjourney.setEnabled(false);
         stopjourney.setAlpha(.3f);
+        startjourney.setEnabled(false);
+        startjourney.setAlpha(.3f);
+        Toast.makeText(MapsHomeActivity.this,"Please wait fetching the World for you!!!!",Toast.LENGTH_SHORT).show();
         //notification();
         if (isMyServiceRunning(LocationRequestService.class)) {
             startjourney.setEnabled(false);
@@ -101,6 +104,7 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
 
                     // Permission Granted
                     //locationRequestService = new LocationRequestService(MapsHomeActivity.this);
+                    //mMap.setMyLocationEnabled(true);
                     LocationRequestService.getsamlocationlistener(this);
                     turnongps();
                     startService(new Intent(MapsHomeActivity.this, LocationRequestService.class));
@@ -126,8 +130,17 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
         ismapready=true;
         mMap.setBuildingsEnabled(true);
+        if (isMyServiceRunning(LocationRequestService.class)) {
+
+        }
+        else {
+            startjourney.setEnabled(true);
+            startjourney.setAlpha(1f);
+        }
+
        // mMap.setTrafficEnabled(true);
 
 
@@ -136,8 +149,19 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        firstTime=false;
+    }
+
+    @Override
     public void onLocationUpdate(Location location) {
-        this.time=time;
+        //this.time=time;
         //this.distance=distance;
         //speed=location.getSpeed();
       //  polyLineOptions = new PolylineOptions();
@@ -153,7 +177,7 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
             firstTime=true;
         }
 
-        LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
+        //LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
 
         //points.add(position);
         redrawLine(LocationRequestService.points); //added

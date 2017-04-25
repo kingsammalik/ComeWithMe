@@ -50,7 +50,7 @@ public class LocationRequestService extends Service implements
     private static final long FASTEST_INTERVAL = 1000; // 5 sec
     private double latitude, longitude;
 
-   static SamLocationListener samLocationListener;
+    static SamLocationListener samLocationListener;
      LocationRequestService(Context context) {
         this.context=context.getApplicationContext();
 
@@ -90,7 +90,7 @@ public class LocationRequestService extends Service implements
 
     public interface SamLocationListener {
 
-        public void onLocationUpdate(Location location);
+         void onLocationUpdate(Location location);
 
     }
 
@@ -99,15 +99,15 @@ public class LocationRequestService extends Service implements
 
         Log.e("helper","accuracy "+location.getAccuracy());
 
-        int MIN_ACCURACY = 25; // in metters
+        int MIN_ACCURACY = 50; // in metters
         if ((!location.hasAccuracy()) || (location.getAccuracy() > MIN_ACCURACY))
         {
             Toast.makeText(this,"Discarding inaccurate location",Toast.LENGTH_SHORT).show();
         }
         else {
             if(count==0){
-                plat=location.getLatitude();;
-                plong=location.getLongitude();;
+                plat=location.getLatitude();
+                plong=location.getLongitude();
             }
             else {
                 plat=latitude;
@@ -177,8 +177,7 @@ public class LocationRequestService extends Service implements
         float[] a=new float[1];
         Location.distanceBetween( lat1,  lon1,  lat2,  lon2,a);
         // float distance = locationA.distanceTo(locationB);
-        float distance=a[0];
-        return distance;
+        return a[0];
     }
 
     @Override
@@ -260,6 +259,8 @@ public class LocationRequestService extends Service implements
        // Intent notificationIntent = new Intent(this, MapsHomeActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         notification.contentIntent = contentIntent;
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
         // notification.flags |= Notification.FLAG_NO_CLEAR; //Do not clear the notification
         notification.defaults |= Notification.DEFAULT_LIGHTS; // LED
