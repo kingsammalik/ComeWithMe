@@ -323,7 +323,7 @@ public class LocationRequestService extends Service implements
         notification.contentIntent = contentIntent;
 
        // notification.flags |= Notification.FLAG_NO_CLEAR; //Do not clear the notification
-        notification.defaults |= Notification.DEFAULT_LIGHTS; // LED
+       // notification.defaults |= Notification.DEFAULT_LIGHTS; // LED
         //notification.defaults |= Notification.DEFAULT_VIBRATE; //Vibration
         //notification.defaults |= Notification.DEFAULT_SOUND; // Sound
         mNotificationManager.notify(1, notification);
