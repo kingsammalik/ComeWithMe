@@ -80,7 +80,7 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
         stopjourney.setAlpha(.3f);
         startjourney.setEnabled(false);
         startjourney.setAlpha(.3f);
-        Toast.makeText(MapsHomeActivity.this,"Please wait fetching the World for you!!!!",Toast.LENGTH_SHORT).show();
+        Toast.makeText(MapsHomeActivity.this,"Please wait fetching the World for you!!!!!",Toast.LENGTH_SHORT).show();
         //notification();
         if (isMyServiceRunning(LocationRequestService.class)) {
             startjourney.setEnabled(false);
