@@ -46,6 +46,10 @@ public class LocationRequestService extends Service implements
     static float speed;
     //Stopwatch timer = new Stopwatch();
 
+
+    /*This is the background service code.*/
+
+
     private static final long INTERVAL = 2000 ;//10 sec
     private static final long FASTEST_INTERVAL = 1000; // 5 sec
     private double latitude, longitude;
@@ -60,11 +64,11 @@ public class LocationRequestService extends Service implements
     public LocationRequestService() {
     }
 
-    public static void getsamlocationlistener( SamLocationListener samLocationListener){
+    public static void getsamlocationlistener( SamLocationListener samLocationListener){ //gets the instance of the interface for callbacks.
         LocationRequestService.samLocationListener=samLocationListener;
     }
 
-    public void executeService() {
+    public void executeService() { //Start the location service.
         mGoogleApiClient.connect();
         if (mGoogleApiClient.isConnected()) {
             startLocationUpdates();
@@ -88,7 +92,7 @@ public class LocationRequestService extends Service implements
         return null;
     }
 
-    public interface SamLocationListener {
+    public interface SamLocationListener {  //Interface used for callbacks
 
          void onLocationUpdate(Location location);
 
@@ -96,7 +100,7 @@ public class LocationRequestService extends Service implements
 
     @Override
     public void onLocationChanged(Location location) {
-
+      //This function is called whenever the location of the user is changed.
         Log.e("helper","accuracy "+location.getAccuracy());
 
         int MIN_ACCURACY = 50; // in metters
@@ -123,7 +127,7 @@ public class LocationRequestService extends Service implements
             dis=dis+distemp;
              dis = BigDecimal.valueOf(dis)
                     .setScale(2, RoundingMode.HALF_UP)
-                    .doubleValue();
+                    .doubleValue();  //Distance calculated between last two coordinates.
             //notification();
             points.add(position);
             Log.e("helper","dis "+dis);
@@ -224,6 +228,7 @@ public class LocationRequestService extends Service implements
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        //function invoked when service is started.
         // Let it continue running until it is stopped.
         mGoogleApiClient = new GoogleApiClient.Builder(getApplicationContext())
                 .addConnectionCallbacks(this)
@@ -262,6 +267,8 @@ public class LocationRequestService extends Service implements
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
                 | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
+        /*This is to notify the user of the updates in the notification area.*/
+
         // notification.flags |= Notification.FLAG_NO_CLEAR; //Do not clear the notification
         notification.defaults |= Notification.DEFAULT_LIGHTS; // LED
         notification.defaults |= Notification.DEFAULT_VIBRATE; //Vibration
@@ -299,6 +306,9 @@ public class LocationRequestService extends Service implements
     }
 
      void notification(){
+
+        //This function updates the notification for the real time data.
+
         int icon = R.mipmap.ic_launcher;
         long when = System.currentTimeMillis();
         Notification notification = new Notification(icon, getResources().getString(R.string.app_name), when);
@@ -330,6 +340,9 @@ public class LocationRequestService extends Service implements
     }
 
     void handlerfunction(){
+
+         //This is the thread whch calls this fucntion in loops.
+
         final Handler h = new Handler();
         final int delay = 1000; //milliseconds
 

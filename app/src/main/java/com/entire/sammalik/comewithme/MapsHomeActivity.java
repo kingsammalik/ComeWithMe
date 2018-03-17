@@ -63,6 +63,9 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        //This is the screen code.
+
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Answers(), new Crashlytics());
         setContentView(R.layout.activity_maps_home);
@@ -82,14 +85,14 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
         startjourney.setAlpha(.3f);
         Toast.makeText(MapsHomeActivity.this,"Please wait fetching the World for you!!!!!",Toast.LENGTH_SHORT).show();
         //notification();
-        if (isMyServiceRunning(LocationRequestService.class)) {
+        if (isMyServiceRunning(LocationRequestService.class)) { //Checking if the background service is running or not.
             startjourney.setEnabled(false);
             startjourney.setAlpha(.3f);
             stopjourney.setEnabled(true);
             stopjourney.setAlpha(1f);
             // Permission Granted
             //locationRequestService = new LocationRequestService(MapsHomeActivity.this);
-            LocationRequestService.getsamlocationlistener(this);
+            LocationRequestService.getsamlocationlistener(this); //Interfaces for the location.
             turnongps();
             handlerfunction();
         }
@@ -98,6 +101,7 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        //This is the function invoked when a user accepts or rejects the permission shown to it.
         switch (requestCode) {
             case 123:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -144,7 +148,7 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
        // mMap.setTrafficEnabled(true);
 
 
-        // Add a marker in Sydney and move the camera
+
 
     }
 
@@ -161,6 +165,9 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
 
     @Override
     public void onLocationUpdate(Location location) {
+        //This function is called whenever the location of the user is changed.
+
+
         //this.time=time;
         //this.distance=distance;
         //speed=location.getSpeed();
@@ -169,11 +176,11 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
         longitude=location.getLongitude();
         //Log.e("map","lat "+location.getLatitude()+" long "+location.getLongitude());
         LatLng sydney = new LatLng(location.getLatitude(), location.getLongitude());
-        mMap.addMarker(new MarkerOptions().position(sydney).title("My Location"));
+        mMap.addMarker(new MarkerOptions().position(sydney).title("My Location")); //marker is set on the location
 
         if((!firstTime)&& ismapready){
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney,15));
-            mMap.animateCamera(CameraUpdateFactory.zoomIn());
+            mMap.animateCamera(CameraUpdateFactory.zoomIn()); //The map view is moved to the current location.
             firstTime=true;
         }
 
@@ -187,6 +194,7 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
         mMap.addPolyline(polyLineOptions);*/
     }
     private void redrawLine(ArrayList<LatLng> points) {
+        //This function sets the line on the map depicting the path the user has taken enroute.
         mMap.clear();  //clears all Markers and Polylines
         PolylineOptions options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
         for (int i = 0; i < points.size(); i++) {
@@ -217,11 +225,13 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
         if(id==R.id.stopjourney){
             stopjourney.setEnabled(false);
             stopjourney.setAlpha(.3f);
-            stopService(new Intent(MapsHomeActivity.this, LocationRequestService.class));
+            stopService(new Intent(MapsHomeActivity.this, LocationRequestService.class)); //Background service which captures the user's location in background is stopped.
         }
     }
 
     void turnongps(){
+
+        //It shows the dialog to user which asks to turn on the gps of the phone if its off.
           if (googleApiClient == null) {
             googleApiClient = new GoogleApiClient.Builder(getApplicationContext())
                     .addApi(LocationServices.API).build();
@@ -274,6 +284,7 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
+        //Check if the background service is running.
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.getName().equals(service.service.getClassName())) {
@@ -284,6 +295,7 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
     }
 
     void handlerfunction(){
+        //This function updates the UI for the Distance Timer, it invokes a thread which gets executed in loop.
         final Handler h = new Handler();
         final int delay = 1000; //milliseconds
 
